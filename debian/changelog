@@ -1,0 +1,46 @@
+onevpl-intel-gpu (24.3.1-0ubuntu1~24.10~ppa1) oracular; urgency=medium
+
+  * Bump version to 24.3.1 
+  * Specify oracular version
+
+ -- Shane McKee <shane.mckee@canonical.com>  Fri, 09 Aug 2024 19:25:28 +0800
+
+onevpl-intel-gpu (23.2.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * patches: Drop upstreamed patch.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Mon, 19 Jun 2023 16:38:15 +0300
+
+onevpl-intel-gpu (22.6.4-1) unstable; urgency=medium
+
+  * New upstream release.
+  * patches: Make the build reproducible. (Closes: #1006455)
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Thu, 08 Dec 2022 14:00:45 +0200
+
+onevpl-intel-gpu (22.5.4-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Tue, 18 Oct 2022 14:25:41 +0300
+
+onevpl-intel-gpu (22.5.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Fri, 26 Aug 2022 13:32:21 +0300
+
+onevpl-intel-gpu (22.3.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * 0001-build-fix-build-with-gcc-11-197.patch: Dropped, upstream.
+  * install: Add enctools.so.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Mon, 04 Apr 2022 13:28:40 +0300
+
+onevpl-intel-gpu (22.2.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #1005347)
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Fri, 11 Feb 2022 21:16:10 +0200
