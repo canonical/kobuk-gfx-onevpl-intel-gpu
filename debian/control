@@ -1,4 +1,4 @@
-Source: onevpl-intel-gpu
+Source: intel-onevpl
 Section: graphics
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -6,16 +6,20 @@ XSBC-Original-Maintainer: Timo Aaltonen <tjaalton@debian.org>
 Build-Depends: debhelper-compat (= 13),
  cmake,
  libdrm-dev,
- libva-dev,
- libvpl-dev,
- pkg-config,
+ libpciaccess-dev,
+ libva-dev (>= 2.17),
+ libx11-dev,
+ libx11-xcb-dev,
+ libxcb-dri3-dev,
+ libxcb-present-dev,
+ pkg-config
 Standards-Version: 4.6.0
 Homepage: https://github.com/oneapi-src/oneVPL-intel-gpu
 Vcs-Browser: https://salsa.debian.org/debian/onevpl-intel-gpu
 Vcs-Git: https://salsa.debian.org/debian/onevpl-intel-gpu.git
 Rules-Requires-Root: no
 
-Package: libmfx-gen1.2
+Package: libmfx-gen1
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Intel oneVPL GPU Runtime -- shared library
@@ -33,7 +37,7 @@ Description: Intel oneVPL GPU Runtime -- shared library
 Package: libmfx-gen-dev
 Architecture: amd64
 Depends: ${misc:Depends},
- libmfx-gen1.2 (= ${binary:Version})
+ libmfx-gen1 (= ${binary:Version})
 Description: Intel oneVPL GPU Runtime -- development files
  Intel oneVPL GPU Runtime is a Runtime implementation of oneVPL
  API for Intel Gen GPUs. Runtime provides access to hardware-accelerated
