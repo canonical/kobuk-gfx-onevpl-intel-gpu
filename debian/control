@@ -1,4 +1,4 @@
-Source: intel-onevpl
+Source: onevpl-intel-gpu
 Section: graphics
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
