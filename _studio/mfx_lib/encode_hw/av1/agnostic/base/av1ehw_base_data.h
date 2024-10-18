@@ -766,6 +766,7 @@ namespace Base
     };
 
     using DpbType = std::vector<std::shared_ptr<DpbFrame>>;
+    using DpbIterType = DpbType::iterator;
     using RefListType = std::array<mfxU8, REFS_PER_FRAME>;
     using DpbRefreshType = std::array<mfxU8, NUM_REF_FRAMES>;
 
@@ -840,11 +841,6 @@ namespace Base
         mfxI32            PrevRAP                = -1;
         mfxU16            NumRecode              = 0;
         mfxU8             QpY                    = 0;
-        mfxI8             YDcDeltaQ              = 0;
-        mfxI8             UDcDeltaQ              = 0;
-        mfxI8             UAcDeltaQ              = 0;
-        mfxI8             VDcDeltaQ              = 0;
-        mfxI8             VAcDeltaQ              = 0;
         mfxU32            InsertHeaders          = 0;
         mfxU32            StatusReportId         = mfxU32(-1);
         DpbRefreshType    RefreshFrameFlags      = {};
@@ -1315,6 +1311,7 @@ namespace Base
     enum eFeatureId
     {
           FEATURE_GENERAL = 0
+        , FEATURE_SCC
         , FEATURE_DDI
         , FEATURE_DDI_PACKER
         , FEATURE_ALLOCATOR
@@ -1329,9 +1326,7 @@ namespace Base
         , FEATURE_ENCTOOLS
         , FEATURE_MAX_FRAME_SIZE
         , FEATURE_HDR
-#if defined(MFX_ENABLE_ENCODE_QUALITYINFO)
         , FEATURE_QUALITYINFO
-#endif
         , NUM_FEATURES
     };
 
@@ -1401,9 +1396,7 @@ namespace Base
         mfxU32       DisplayOrder  = 0;
         mfxU16       LongTermIdx   = MFX_LONGTERM_IDX_NO_IDX;
         bool         isLTR         = false;
-#if defined(MFX_ENABLE_ENCODE_QUALITYINFO)
         mfxU32       MSE[3];
-#endif
     };
 
     struct Task

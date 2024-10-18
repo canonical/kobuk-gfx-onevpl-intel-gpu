@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 Intel Corporation
+// Copyright (c) 2021-2023 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,42 +23,28 @@
 #include "mfx_common.h"
 #if defined(MFX_ENABLE_AV1_VIDEO_ENCODE)
 
-#include "av1ehw_base.h"
-#include "av1ehw_base_data.h"
-
 namespace AV1EHW
 {
-namespace Base
+namespace Xe2
 {
-
-class IDDIPacker
-    : public FeatureBase
-{
-public:
+    class CDEF
+        : public FeatureBase
+    {
+    public:
 #define DECL_BLOCK_LIST\
-    DECL_BLOCK(Init) \
-    DECL_BLOCK(InitTileGroups) \
-    DECL_BLOCK(Reset) \
-    DECL_BLOCK(SubmitTask) \
-    DECL_BLOCK(QueryTask) \
-    DECL_BLOCK(PatchDDIFeedback) \
-    DECL_BLOCK(QueryCaps) \
-    DECL_BLOCK(SetCallChains)
-#define DECL_FEATURE_NAME "Base_IDDIPacker"
+        DECL_BLOCK(SetDefaultsCallChain)
+#define DECL_FEATURE_NAME "Xe2_CDEF"
 #include "av1ehw_decl_blocks.h"
 
-    IDDIPacker(mfxU32 FeatureId)
+    CDEF(mfxU32 FeatureId)
         : FeatureBase(FeatureId)
     {}
 
-protected:
-    virtual void InitAlloc(const FeatureBlocks& blocks, TPushIA Push) override = 0;
-    virtual void SubmitTask(const FeatureBlocks& blocks, TPushST Push) override = 0;
-    virtual void QueryTask(const FeatureBlocks& blocks, TPushQT Push) override = 0;
-    virtual void ResetState(const FeatureBlocks& blocks, TPushRS Push) override = 0;
-};
+    protected:
+        virtual void Query1NoCaps(const FeatureBlocks& /*blocks*/, TPushQ1 Push) override;
+    };
 
-} //Base
+} //Xe2
 } //namespace AV1EHW
 
-#endif
+#endif //defined(MFX_ENABLE_AV1_VIDEO_ENCODE)

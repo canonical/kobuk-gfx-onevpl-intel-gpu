@@ -1242,6 +1242,29 @@ mfxStatus VideoDECODEAV1::FillVideoParam(UMC_AV1_DECODER::AV1DecoderParams const
         || par->mfx.FrameInfo.FourCC == MFX_FOURCC_Y416)
         par->mfx.FrameInfo.Shift = 1;
 
+    // video signal section
+    mfxExtVideoSignalInfo * videoSignal = (mfxExtVideoSignalInfo *)GetExtendedBuffer(par->ExtParam, par->NumExtParam, MFX_EXTBUFF_VIDEO_SIGNAL_INFO);
+    if (videoSignal)
+    {
+        videoSignal->VideoFormat = static_cast<mfxU16>(vp->info.color_format);
+        videoSignal->VideoFullRange = static_cast<mfxU16>(vp->color_range);
+        videoSignal->ColourDescriptionPresent = static_cast<mfxU16>(vp->color_description_present_flag);
+        videoSignal->ColourPrimaries = static_cast<mfxU16>(vp->color_primaries);
+        videoSignal->TransferCharacteristics = static_cast<mfxU16>(vp->transfer_characteristics);
+        videoSignal->MatrixCoefficients = static_cast<mfxU16>(vp->matrix_coefficients);
+    }
+
+    if (vp->framerate_n && vp->framerate_d)
+    {
+        par->mfx.FrameInfo.FrameRateExtN = vp->framerate_n;
+        par->mfx.FrameInfo.FrameRateExtD = vp->framerate_d;
+    }
+    else // If no frame rate info in bitstream, will set to default 0
+    {
+        par->mfx.FrameInfo.FrameRateExtN = 0;
+        par->mfx.FrameInfo.FrameRateExtD = 0;
+    }
+
     return MFX_ERR_NONE;
 }
 

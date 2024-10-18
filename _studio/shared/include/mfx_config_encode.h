@@ -98,14 +98,8 @@
 #endif
 #endif
 
-#ifdef ONEVPL_EXPERIMENTAL
 #if (!defined(LINUX32) && !defined(LINUX64))
 #define MFX_ENABLE_ENCODE_QUALITYINFO
-#endif
-#endif
-
-#ifdef ONEVPL_EXPERIMENTAL
-#define MFX_ENABLE_ENCODE_AV1SCC
 #endif
 
 #endif // _MFX_CONFIG_ENCODE_H_

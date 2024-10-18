@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Intel Corporation
+// Copyright (c) 2022-2024 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,11 @@ namespace CommonCaps {
         return (platform >= MFX_HW_DG2);
     }
 
+
+    inline bool IsCBRSlidingWinSupported(eMFXHWType platform)
+    {
+        return (platform >= MFX_HW_MTL);
+    }
 }
 
 #ifdef MFX_ENABLE_H264_VIDEO_ENCODE
@@ -135,6 +140,18 @@ namespace AV1ECaps {
     inline bool IsSegmentationHWLimitationNeeded(eMFXHWType platform)
     {
         return (platform == MFX_HW_DG2);
+    }
+}
+
+namespace HEVCECaps {
+    inline bool IsNative422Supported(eMFXHWType platform)
+    {
+        return (platform >= MFX_HW_BMG);
+    }
+
+    inline bool IsTUExtended(eMFXHWType platform)
+    {
+        return (platform >= MFX_HW_BMG);
     }
 }
 

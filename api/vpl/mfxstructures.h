@@ -820,7 +820,7 @@ typedef struct {
         of this option. Use the Query API function to check if this feature is supported. */
     mfxU16  LowPower;
     /*! Specifies a multiplier for bitrate control parameters. Affects the following variables: InitialDelayInKB, BufferSizeInKB,
-        TargetKbps, MaxKbps. If this value is not equal to zero, the encoder calculates BRC parameters as ``value * BRCParamMultiplier``. */
+        TargetKbps, MaxKbps, WinBRCMaxAvgKbps. If this value is not equal to zero, the encoder calculates BRC parameters as ``value * BRCParamMultiplier``. */
     mfxU16  BRCParamMultiplier;
 
     mfxFrameInfo    FrameInfo; /*!< mfxFrameInfo structure that specifies frame parameters. */
@@ -1205,6 +1205,7 @@ enum {
     MFX_LEVEL_HEVC_6   = 60,
     MFX_LEVEL_HEVC_61  = 61,
     MFX_LEVEL_HEVC_62  = 62,
+    MFX_LEVEL_HEVC_85  = 85,
     /*! @} */
 
     /*! @{ */
@@ -1756,14 +1757,13 @@ typedef struct {
                                 @note Not all codecs and implementations support these values. Use the Query API function to check if this feature is supported */
 
     /*!
-       When rate control method is MFX_RATECONTROL_VBR, MFX_RATECONTROL_LA, MFX_RATECONTROL_LA_HRD, or MFX_RATECONTROL_QVBR this parameter
-       specifies the maximum bitrate averaged over a sliding window specified by WinBRCSize. For MFX_RATECONTROL_CBR this parameter is ignored and
-       equals TargetKbps.
+       When rate control method is MFX_RATECONTROL_CBR, MFX_RATECONTROL_VBR, MFX_RATECONTROL_LA, MFX_RATECONTROL_LA_HRD, or MFX_RATECONTROL_QVBR 
+       this parameter specifies the maximum bitrate averaged over a sliding window specified by WinBRCSize.
     */
     mfxU16      WinBRCMaxAvgKbps;
     /*!
        When rate control method is MFX_RATECONTROL_CBR, MFX_RATECONTROL_VBR, MFX_RATECONTROL_LA, MFX_RATECONTROL_LA_HRD, or MFX_RATECONTROL_QVBR
-       this parameter specifies sliding window size in frames. Set this parameter to zero to disable sliding window.
+       this parameter specifies sliding window size in frames. Set WinBRCMaxAvgKbps and WinBRCSize to zero to disable sliding window.
     */
     mfxU16      WinBRCSize;
 
@@ -2252,7 +2252,7 @@ enum {
     */
     MFX_EXTBUFF_HEVC_REFLISTS                   = MFX_EXTBUFF_AVC_REFLISTS,
     /*!
-       This extended buffer configures the structure of temporal layers inside the encoded H.264 bitstream. See the mfxExtAvcTemporalLayers
+       This extended buffer configures the structure of temporal layers inside the encoded H.265 bitstream. See the mfxExtHEVCTemporalLayers
        structure for details. The application can attach this buffer to the mfxVideoParam structure for encoding initialization.
     */
     MFX_EXTBUFF_HEVC_TEMPORAL_LAYERS            = MFX_EXTBUFF_AVC_TEMPORAL_LAYERS,
@@ -2426,20 +2426,15 @@ enum {
     */
     MFX_EXTBUFF_EXPORT_SHARING_DESC_VULKAN = MFX_MAKEFOURCC('E', 'V', 'U', 'L'),
 #endif
-#ifdef ONEVPL_EXPERIMENTAL
     /*!
        See the mfxExtVPPAISuperResolution structure for details.
     */
     MFX_EXTBUFF_VPP_AI_SUPER_RESOLUTION = MFX_MAKEFOURCC('V','A','S','R'),
-#endif
-#ifdef ONEVPL_EXPERIMENTAL
     /*!
        See the mfxExtVPPAIFrameInterpolation structure for details.
     */
     MFX_EXTBUFF_VPP_AI_FRAME_INTERPOLATION = MFX_MAKEFOURCC('V', 'A', 'F', 'I'),
-#endif
-#ifdef ONEVPL_EXPERIMENTAL
-   /*!
+    /*!
       See the mfxExtQualityInfoMode structure for details.
    */
    MFX_EXTBUFF_ENCODED_QUALITY_INFO_MODE = MFX_MAKEFOURCC('E', 'N', 'Q', 'M'),
@@ -2447,14 +2442,10 @@ enum {
       See the mfxExtQualityInfoOutput structure for details.
    */
    MFX_EXTBUFF_ENCODED_QUALITY_INFO_OUTPUT = MFX_MAKEFOURCC('E', 'N', 'Q', 'O'),
-#endif
-#ifdef ONEVPL_EXPERIMENTAL
    /*!
       See the mfxExtAV1ScreenContentTools structure for details.
    */
    MFX_EXTBUFF_AV1_SCREEN_CONTENT_TOOLS = MFX_MAKEFOURCC('1', 'S', 'C', 'C'),
-#endif
-#ifdef ONEVPL_EXPERIMENTAL
     /*!
         See the mfxExtAlphaChannelEncCtrl structure for more details.
     */
@@ -2463,7 +2454,6 @@ enum {
         See the mfxExtAlphaChannelSurface structure for more details.
     */
     MFX_EXTBUFF_ALPHA_CHANNEL_SURFACE = MFX_MAKEFOURCC('A', 'C', 'S', 'F'),
-#endif
 };
 
 /* VPP Conf: Do not use certain algorithms  */
@@ -5143,7 +5133,6 @@ typedef struct {
 MFX_PACK_END()
 #endif
 
-#ifdef ONEVPL_EXPERIMENTAL
 /*! The mfxAISuperResolutionMode enumerator specifies the mode of AI based super resolution. */
 typedef enum {
     MFX_AI_SUPER_RESOLUTION_MODE_DISABLED = 0,        /*!< Super Resolution is disabled.*/
@@ -5170,13 +5159,16 @@ typedef struct {
     mfxHDL                      reserved2[4];          /*!< Reserved for future use. */
 } mfxExtVPPAISuperResolution;
 MFX_PACK_END()
-#endif
 
-#ifdef ONEVPL_EXPERIMENTAL
 /* The mfxAIFrameInterpolationMode enumerator specifies the mode of AI based frame interpolation. */
 typedef enum {
     MFX_AI_FRAME_INTERPOLATION_MODE_DISABLE = 0,         /*!< AI based frame interpolation is disabled. The library duplicates the frame if AI frame interpolation is disabled.*/
     MFX_AI_FRAME_INTERPOLATION_MODE_DEFAULT = 1,         /*!< Default AI based frame interpolation mode. The library selects the most appropriate AI based frame interpolation mode.*/
+
+#ifdef ONEVPL_EXPERIMENTAL
+    MFX_AI_FRAME_INTERPOLATION_MODE_BEST_SPEED = 2,      /*!< AI based frame interpolation in best speed.*/
+    MFX_AI_FRAME_INTERPOLATION_MODE_BEST_QUALITY = 3,    /*!< AI based frame interpolation in best quality.*/
+#endif
 } mfxAIFrameInterpolationMode;
 
 /*!
@@ -5210,9 +5202,7 @@ typedef struct {
     mfxHDL                              reserved2[8];                     /*!< Reserved for future use. */
 } mfxExtVPPAIFrameInterpolation;
 MFX_PACK_END()
-#endif
 
-#ifdef ONEVPL_EXPERIMENTAL
 /*! The mfxQualityInfoMode enumerator specifies the mode of Quality information. */
 typedef enum {
     MFX_QUALITY_INFO_DISABLE        = 0,   /*!< Quality reporting disabled. */
@@ -5242,14 +5232,13 @@ MFX_PACK_BEGIN_STRUCT_W_PTR()
 typedef struct {
     mfxExtBuffer        Header;         /*!< Extension buffer header. Header.BufferId must be equal to MFX_EXTBUFF_ENCODED_QUALITY_INFO_OUTPUT. */
     mfxU32              FrameOrder;     /*!< Frame display order of encoded picture. */
-    mfxU32              MSE[3];         /*!< Frame level mean squared errors (MSE) for Y/U/V channel. */
+    mfxU32              MSE[3];         /*!< Frame level mean squared errors (MSE) for Y/U/V channel. 
+                                             @note MSE is stored in U24.8 format. The calculation formula is: PSNR = 10 * log10(256.0 * (2^bitDepth - 1)^2 / (double)MSE)). */
     mfxU32              reserved1[50];  /*!< Reserved for future use. */
     mfxHDL              reserved2[4];   /*!< Reserved for future use. */
 } mfxExtQualityInfoOutput;
 MFX_PACK_END()
-#endif
 
-#ifdef ONEVPL_EXPERIMENTAL
 MFX_PACK_BEGIN_USUAL_STRUCT()
 /*!
    Used by the encoder to set the screen content tools.
@@ -5277,10 +5266,8 @@ typedef struct {
     mfxU16              reserved[10];   /*!< Reserved for future use. */
 } mfxExtAV1ScreenContentTools;
 MFX_PACK_END()
-#endif
 
 
-#ifdef ONEVPL_EXPERIMENTAL
 /*! The AlphaChannelMode enumerator specifies alpha is straight or pre-multiplied. */
 enum {
     /*!
@@ -5331,7 +5318,6 @@ typedef struct {
     mfxU16              reserved[8];
 } mfxExtAlphaChannelSurface;
 MFX_PACK_END()
-#endif
 
 #ifdef __cplusplus
 } // extern "C"
