@@ -1,4 +1,4 @@
-// Copyright (c) 2007-2023 Intel Corporation
+// Copyright (c) 2007-2024 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,7 @@ enum eMFXHWType
 
     MFX_HW_MTL       = 0x1700000,
     MFX_HW_ARL       = MFX_HW_MTL + 1,
+    MFX_HW_BMG       = MFX_HW_MTL + 2,
     MFX_HW_LNL       = MFX_HW_MTL + 3,
 
 };
@@ -543,6 +544,7 @@ typedef struct {
     { 0x56BE, MFX_HW_DG2, MFX_GT4 }, // DG2
     { 0x56BF, MFX_HW_DG2, MFX_GT4 }, // DG2
     { 0x56C2, MFX_HW_DG2, MFX_GT4 }, // DG2
+    { 0x56AF, MFX_HW_DG2, MFX_GT4 }, // DG2
 
     /* PVC */
     { 0x0BD0, MFX_HW_PVC, MFX_GT4 },
@@ -582,6 +584,12 @@ typedef struct {
     { 0x7DD1, MFX_HW_ARL, MFX_GT2 },
     { 0x7D41, MFX_HW_ARL, MFX_GT2 },
 
+    /* BMG */
+    { 0xE202, MFX_HW_BMG, MFX_GT4 },
+    { 0xE20B, MFX_HW_BMG, MFX_GT4 },
+    { 0xE20C, MFX_HW_BMG, MFX_GT4 },
+    { 0xE20D, MFX_HW_BMG, MFX_GT4 },
+    { 0xE212, MFX_HW_BMG, MFX_GT4 },
 
     /* LNL */
     { 0x6420, MFX_HW_LNL, MFX_GT2 },

@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2023 Intel Corporation
+// Copyright (c) 2009-2024 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1277,6 +1277,9 @@ mfxPlatform MakePlatform(eMFXHWType type, mfxU16 device_id)
     case MFX_HW_MTL    : platform.CodeName = MFX_PLATFORM_METEORLAKE;    break;
     case MFX_HW_ARL    : platform.CodeName = MFX_PLATFORM_ARROWLAKE;     break;
     case MFX_HW_LNL    : platform.CodeName = MFX_PLATFORM_LUNARLAKE;     break;
+    case MFX_HW_BMG    :
+                         platform.MediaAdapterType = MFX_MEDIA_DISCRETE;
+                         platform.CodeName = MFX_PLATFORM_BATTLEMAGE;    break;
     default:
                          platform.MediaAdapterType = MFX_MEDIA_UNKNOWN;
                          platform.CodeName = MFX_PLATFORM_UNKNOWN;       break;

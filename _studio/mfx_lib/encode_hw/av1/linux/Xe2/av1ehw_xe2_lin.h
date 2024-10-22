@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 Intel Corporation
+// Copyright (c) 2023 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,42 +23,37 @@
 #include "mfx_common.h"
 #if defined(MFX_ENABLE_AV1_VIDEO_ENCODE)
 
-#include "av1ehw_base.h"
 #include "av1ehw_base_data.h"
+#include "av1ehw_base_lin.h"
+#include "av1ehw_base_impl.h"
 
 namespace AV1EHW
 {
-namespace Base
+namespace Linux
+{
+namespace Xe2
 {
 
-class IDDIPacker
-    : public FeatureBase
-{
-public:
-#define DECL_BLOCK_LIST\
-    DECL_BLOCK(Init) \
-    DECL_BLOCK(InitTileGroups) \
-    DECL_BLOCK(Reset) \
-    DECL_BLOCK(SubmitTask) \
-    DECL_BLOCK(QueryTask) \
-    DECL_BLOCK(PatchDDIFeedback) \
-    DECL_BLOCK(QueryCaps) \
-    DECL_BLOCK(SetCallChains)
-#define DECL_FEATURE_NAME "Base_IDDIPacker"
-#include "av1ehw_decl_blocks.h"
+    enum eFeatureId
+    {
+        FEATURE_XE2CDEF = AV1EHW::Base::eFeatureId::NUM_FEATURES
+        , NUM_FEATURES
+    };
 
-    IDDIPacker(mfxU32 FeatureId)
-        : FeatureBase(FeatureId)
-    {}
+    class MFXVideoENCODEAV1_HW
+        : public Linux::Base::MFXVideoENCODEAV1_HW
+    {
+    public:
+        using TBaseImpl = Linux::Base::MFXVideoENCODEAV1_HW;
 
-protected:
-    virtual void InitAlloc(const FeatureBlocks& blocks, TPushIA Push) override = 0;
-    virtual void SubmitTask(const FeatureBlocks& blocks, TPushST Push) override = 0;
-    virtual void QueryTask(const FeatureBlocks& blocks, TPushQT Push) override = 0;
-    virtual void ResetState(const FeatureBlocks& blocks, TPushRS Push) override = 0;
-};
+        MFXVideoENCODEAV1_HW(
+            VideoCORE& core
+            , mfxStatus& status
+            , eFeatureMode mode = eFeatureMode::INIT);
+    };
 
-} //Base
-} //namespace AV1EHW
+} //Xe2
+} //Linux
+}// namespace AV1EHW
 
-#endif
+#endif //defined(MFX_ENABLE_AV1_VIDEO_ENCODE)

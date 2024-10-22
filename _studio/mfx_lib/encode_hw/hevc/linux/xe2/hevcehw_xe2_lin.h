@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 Intel Corporation
+// Copyright (c) 2024 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,44 +21,45 @@
 #pragma once
 
 #include "mfx_common.h"
-#if defined(MFX_ENABLE_AV1_VIDEO_ENCODE)
+#if defined(MFX_ENABLE_H265_VIDEO_ENCODE)
 
-#include "av1ehw_base.h"
-#include "av1ehw_base_data.h"
+#include "hevcehw_base_lin.h"
+#include "hevcehw_base_data.h"
 
-namespace AV1EHW
+namespace HEVCEHW
 {
-namespace Base
+namespace Linux
 {
-
-class IDDIPacker
-    : public FeatureBase
+namespace Xe2
 {
-public:
-#define DECL_BLOCK_LIST\
-    DECL_BLOCK(Init) \
-    DECL_BLOCK(InitTileGroups) \
-    DECL_BLOCK(Reset) \
-    DECL_BLOCK(SubmitTask) \
-    DECL_BLOCK(QueryTask) \
-    DECL_BLOCK(PatchDDIFeedback) \
-    DECL_BLOCK(QueryCaps) \
-    DECL_BLOCK(SetCallChains)
-#define DECL_FEATURE_NAME "Base_IDDIPacker"
-#include "av1ehw_decl_blocks.h"
+    enum eFeatureId
+    {
+        FEATURE_RECON422 = HEVCEHW::Base::eFeatureId::NUM_FEATURES
+        , NUM_FEATURES
+    };
+    class MFXVideoENCODEH265_HW
+        : public Linux::Base::MFXVideoENCODEH265_HW
+    {
+    public:
+        using TBaseGen = Linux::Base::MFXVideoENCODEH265_HW;
 
-    IDDIPacker(mfxU32 FeatureId)
-        : FeatureBase(FeatureId)
-    {}
+        MFXVideoENCODEH265_HW(
+            VideoCORE& core
+            , mfxStatus& status
+            , eFeatureMode mode = eFeatureMode::INIT);
 
-protected:
-    virtual void InitAlloc(const FeatureBlocks& blocks, TPushIA Push) override = 0;
-    virtual void SubmitTask(const FeatureBlocks& blocks, TPushST Push) override = 0;
-    virtual void QueryTask(const FeatureBlocks& blocks, TPushQT Push) override = 0;
-    virtual void ResetState(const FeatureBlocks& blocks, TPushRS Push) override = 0;
-};
+        virtual mfxStatus Init(mfxVideoParam *par) override;
+    protected:
+        using TFeatureList = HEVCEHW::Base::MFXVideoENCODEH265_HW::TFeatureList;
 
-} //Base
-} //namespace AV1EHW
+        void InternalInitFeatures(
+            mfxStatus& status
+            , eFeatureMode mode
+            , TFeatureList& newFeatures);
+    };
 
-#endif
+} // Xe2
+} // namespace Linux
+} // namespace HEVCEHW
+
+#endif //defined(MFX_ENABLE_H265_VIDEO_ENCODE)
