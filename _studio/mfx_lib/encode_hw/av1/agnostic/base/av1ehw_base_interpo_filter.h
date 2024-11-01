@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2023 Intel Corporation
+// Copyright (c) 2023-2024 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,28 +23,30 @@
 #include "mfx_common.h"
 #if defined(MFX_ENABLE_AV1_VIDEO_ENCODE)
 
+#include "av1ehw_base.h"
+
 namespace AV1EHW
 {
-namespace Xe2
+namespace Base
 {
-    class CDEF
+    class InterpoFilter
         : public FeatureBase
     {
     public:
 #define DECL_BLOCK_LIST\
-        DECL_BLOCK(SetDefaultsCallChain)
-#define DECL_FEATURE_NAME "Xe2_CDEF"
+        DECL_BLOCK(ConfigureTask       )
+#define DECL_FEATURE_NAME "INTERPOLATION_FILTER"
 #include "av1ehw_decl_blocks.h"
 
-    CDEF(mfxU32 FeatureId)
+        InterpoFilter(mfxU32 FeatureId)
         : FeatureBase(FeatureId)
     {}
 
     protected:
-        virtual void Query1NoCaps(const FeatureBlocks& /*blocks*/, TPushQ1 Push) override;
-    };
+        virtual void PostReorderTask(const FeatureBlocks& /*blocks*/, TPushPostRT Push) override;
 
-} //Xe2
+    };
+} //Base
 } //namespace AV1EHW
 
 #endif //defined(MFX_ENABLE_AV1_VIDEO_ENCODE)

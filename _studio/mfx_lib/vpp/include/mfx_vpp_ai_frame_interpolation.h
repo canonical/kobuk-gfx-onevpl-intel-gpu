@@ -48,6 +48,8 @@ public:
     MFXVideoFrameInterpolation();
     virtual ~MFXVideoFrameInterpolation();
 
+    static mfxStatus Query(VideoCORE* core);
+
     mfxStatus Init(
         VideoCORE* core,
         const mfxFrameInfo& inInfo,
@@ -90,6 +92,7 @@ private:
     Ratio                              m_ratio;
     mfxU16                             m_outStamp;
     mfxU16                             m_outTick;
+    bool                               m_sequenceEnd;
 
     mfxU16 m_IOPattern;
 

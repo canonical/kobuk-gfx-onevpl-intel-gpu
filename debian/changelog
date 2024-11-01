@@ -1,3 +1,9 @@
+onevpl-intel-gpu (24.4.2-0ubuntu1~24.10~ppa1) oracular; urgency=medium
+
+  * bump version to 24.4.2 
+
+ -- Pavel Androniychuk <pavel.androniychuk@intel.com>  Fri, 01 Nov 2024 09:26:32 -0700
+
 onevpl-intel-gpu (24.3.4-0ubuntu1~24.04~ppa1) noble; urgency=medium
 
   * bump version to 24.3.4
