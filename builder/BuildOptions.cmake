@@ -25,8 +25,6 @@ include(CMakeDependentOption)
 option( MFX_ENABLE_EXT "Build with extensions?" ON )
 cmake_dependent_option( MFX_ENABLE_KERNELS "Enable media kernels?" ON "MFX_ENABLE_EXT" OFF )
 
-option( MFX_ENABLE_JPEG_SW_FALLBACK "Enabled software fallback for JPEG ?" ON )
-
 
 option( ENABLE_OPENCL "Build targets dependent on OpenCL?" ON )
 
@@ -80,14 +78,6 @@ if (BUILD_KERNELS)
   endif()
 endif()
 
-
-# Supported frameworks for surface sharing
-# Temporarily disable OpenCL surface sharing on Linux until code is ready
-if (CMAKE_SYSTEM_NAME MATCHES Windows)
-  option( MFX_ENABLE_SHARING_OPENCL "Enable surface sharing between VPL and OpenCL." ON)
-else()
-  set( MFX_ENABLE_SHARING_OPENCL OFF)
-endif()
 
 option( MFX_ENABLE_VVC_VIDEO_DECODE "Enabled VVC decoder?" ON)
 option( MFX_ENABLE_AV1_VIDEO_DECODE "Enabled AV1 decoder?" ON)

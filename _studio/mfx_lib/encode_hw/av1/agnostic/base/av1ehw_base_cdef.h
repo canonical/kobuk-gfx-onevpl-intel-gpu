@@ -1,4 +1,4 @@
-// Copyright (c) 2001-2020 Intel Corporation
+// Copyright (c) 2021-2023 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,34 +18,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __DECQTBL_H__
-#define __DECQTBL_H__
+#pragma once
 
-#include "umc_defs.h"
-#if defined (MFX_ENABLE_MJPEG_VIDEO_DECODE)
-#include "ippj.h"
-#include "jpegbase.h"
+#include "mfx_common.h"
+#if defined(MFX_ENABLE_AV1_VIDEO_ENCODE)
 
-class CJPEGDecoderQuantTable
+namespace AV1EHW
 {
-private:
-  uint8_t   m_rbf[DCTSIZE2*sizeof(uint16_t)+(CPU_CACHE_LINE-1)];
+namespace Base
+{
+    class CDEF
+        : public FeatureBase
+    {
+    public:
+#define DECL_BLOCK_LIST\
+        DECL_BLOCK(SetDefaultsCallChain)
+#define DECL_FEATURE_NAME "Xe2_CDEF"
+#include "av1ehw_decl_blocks.h"
 
-public:
-  int     m_id;
-  int     m_precision;
-  int     m_initialized;
-  uint8_t*  m_raw8u;
-  uint16_t* m_raw16u;
+    CDEF(mfxU32 FeatureId)
+        : FeatureBase(FeatureId)
+    {}
 
-  CJPEGDecoderQuantTable(void);
-  virtual ~CJPEGDecoderQuantTable(void);
+    protected:
+        virtual void Query1NoCaps(const FeatureBlocks& /*blocks*/, TPushQ1 Push) override;
+    };
 
-  JERRCODE Init(int id,uint8_t  raw[DCTSIZE2]);
+} //Base
+} //namespace AV1EHW
 
-  JERRCODE Init(int id,uint16_t raw[DCTSIZE2]);
-};
-
-
-#endif // MFX_ENABLE_MJPEG_VIDEO_DECODE
-#endif // __DECQTBL_H__
+#endif //defined(MFX_ENABLE_AV1_VIDEO_ENCODE)

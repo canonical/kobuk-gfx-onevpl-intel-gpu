@@ -215,6 +215,8 @@ if (MFX_ENABLE_AV1_VIDEO_ENCODE)
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_iddi_packer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_impl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_impl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_interpo_filter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_interpo_filter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_packer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_packer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_query_impl_desc.cpp
@@ -237,6 +239,8 @@ if (MFX_ENABLE_AV1_VIDEO_ENCODE)
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_enctools_com.h
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_scc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_scc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_cdef.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/base/av1ehw_base_cdef.h
   )
 
     set(AV1_VIDEO_ENCODE_SRC
@@ -258,8 +262,6 @@ if (MFX_ENABLE_AV1_VIDEO_ENCODE)
 
       ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/Xe2/av1ehw_xe2_scc.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/Xe2/av1ehw_xe2_scc.h
-      ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/Xe2/av1ehw_xe2_cdef.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/av1/agnostic/Xe2/av1ehw_xe2_cdef.h
     )
 
   custom_source_group("av1" ${AV1_VIDEO_ENCODE_SRC})
@@ -336,6 +338,7 @@ target_include_directories(encode_hw
     ${MSDK_UMC_ROOT}/codec/brc/include
     ${MSDK_UMC_ROOT}/codec/color_space_converter/include
     ${OPENCL_INCLUDE}
+    ${VULKAN_INCLUDE}
 )
 
 target_link_libraries(encode_hw

@@ -847,6 +847,7 @@ namespace Base
         BitOffsets        Offsets                = {};
         mfxU8             MinBaseQIndex          = 0;
         mfxU8             MaxBaseQIndex          = 0;
+        mfxU8             AdaptiveTUEnabled      = 0;
 
         RefListType       RefList                = {};
         DpbType           DPB;
@@ -1327,6 +1328,7 @@ namespace Base
         , FEATURE_MAX_FRAME_SIZE
         , FEATURE_HDR
         , FEATURE_QUALITYINFO
+        , FEATURE_INTERPO_FILTER
         , NUM_FEATURES
     };
 
