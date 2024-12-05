@@ -1,3 +1,9 @@
+onevpl-intel-gpu (24.4.3-0ubuntu1~24.10~ppa1) oracular; urgency=medium
+
+  * Version bump to 24.4.3
+
+ -- Shane McKee <shane.mckee@canonical.com>  Thu, 05 Dec 2024 07:30:21 +0800
+
 onevpl-intel-gpu (24.4.2-0ubuntu1~24.10~ppa1) oracular; urgency=medium
 
   * bump version to 24.4.2
