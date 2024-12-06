@@ -7,7 +7,7 @@ Build-Depends: debhelper-compat (= 13),
  cmake,
  libdrm-dev,
  libpciaccess-dev,
- libva-dev (>= 2.27),
+ libva-dev (>= 2.22),
  libx11-dev,
  libx11-xcb-dev,
  libxcb-dri3-dev,
@@ -21,6 +21,8 @@ Rules-Requires-Root: no
 
 Package: libmfx-gen1
 Architecture: amd64
+Conflicts: libmfx-gen1.2
+Replaces: libmfx-gen1.2
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Intel oneVPL GPU Runtime -- shared library
  Intel oneVPL GPU Runtime is a Runtime implementation of oneVPL

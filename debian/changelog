@@ -1,3 +1,9 @@
+onevpl-intel-gpu (24.4.3-0ubuntu1~24.10~ppa2) oracular; urgency=medium
+
+  * Fix libmfxgen1.2 pkg conflicts and libva dependency version
+
+ -- Pavel Androniychuk <pavel.androniychuk@intel.com>  Thu, 05 Dec 2024 15:38:43 -0800
+
 onevpl-intel-gpu (24.4.3-0ubuntu1~24.10~ppa1) oracular; urgency=medium
 
   * Version bump to 24.4.3
