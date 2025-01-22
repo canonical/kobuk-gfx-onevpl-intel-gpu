@@ -1,3 +1,9 @@
+onevpl-intel-gpu (25.1.0-0ubuntu1~24.10~ppa1) oracular; urgency=medium
+
+  * Version bump to 25.1.0
+
+ -- Pavel Androniychuk <pavel.androniychuk@intel.com>  Tue, 21 Jan 2025 13:49:28 -0800
+
 onevpl-intel-gpu (24.4.3-0ubuntu1~24.10~ppa2) oracular; urgency=medium
 
   * Fix libmfxgen1.2 pkg conflicts and libva dependency version
