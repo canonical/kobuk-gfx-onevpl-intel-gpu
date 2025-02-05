@@ -14,7 +14,7 @@ Vcs-Browser: https://salsa.debian.org/debian/onevpl-intel-gpu
 Vcs-Git: https://salsa.debian.org/debian/onevpl-intel-gpu.git
 Rules-Requires-Root: no
 
-Package: libmfx-gen1.2
+Package: libmfx-gen1
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Intel VPL GPU Runtime -- shared library
