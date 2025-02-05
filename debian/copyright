@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: onevpl-intel-gpu
-Upstream-Contact: https://github.com/oneapi-src/oneVPL-intel-gpu
-Source: https://github.com/oneapi-src/oneVPL-intel-gpu
+Upstream-Name: vpl-gpu-rt
+Upstream-Contact: https://github.com/intel/vpl-gpu-rt
+Source: https://github.com/intel/vpl-gpu-rt
 
 Files: *
 Copyright: 2003-2021 Intel Corporation
