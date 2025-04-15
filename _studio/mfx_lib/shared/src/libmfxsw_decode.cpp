@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020 Intel Corporation
+// Copyright (c) 2018-2025 Intel Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -437,7 +437,7 @@ mfxStatus MFXVideoDECODE_Init(mfxSession session, mfxVideoParam *par)
     TRACE_EVENT(MFX_TRACE_API_DECODE_INIT_TASK, EVENT_TYPE_START, TR_KEY_MFX_API, make_event_data(session, par ? par->mfx.FrameInfo.Width : 0, 
         par ? par->mfx.FrameInfo.Height : 0, par ? par->AsyncDepth : 0, par ? par->mfx.DecodedOrder : 0, par ? par->mfx.CodecId : 0));
 
-    mfxStatus mfxRes;
+    mfxStatus mfxRes = MFX_ERR_NONE;
 
     MFX_CHECK(session, MFX_ERR_INVALID_HANDLE);
     MFX_CHECK(par, MFX_ERR_NULL_PTR);
@@ -514,7 +514,7 @@ mfxStatus MFXVideoDECODE_Close(mfxSession session)
 
 mfxStatus MFXVideoDECODE_DecodeFrameAsync(mfxSession session, mfxBitstream *bs, mfxFrameSurface1 *surface_work, mfxFrameSurface1 **surface_out, mfxSyncPoint *syncp)
 {
-    mfxStatus mfxRes;
+    mfxStatus mfxRes = MFX_ERR_NONE;
     PERF_UTILITY_AUTO(__FUNCTION__, PERF_LEVEL_API);
     TRACE_EVENT(MFX_TRACE_API_DECODE_FRAME_ASYNC_TASK, EVENT_TYPE_START, TR_KEY_MFX_API, make_event_data(session, surface_work, bs ? bs->DataLength : 0, bs ? bs->DataFlag : 0));
 
@@ -625,7 +625,7 @@ struct DHandlers {
 };
 typedef std::map<mfxU32, DHandlers> CodecId2Handlers;
 
-mfxStatus QueryImplsDescription(VideoCORE& core, mfxDecoderDescription& caps, mfx::PODArraysHolder& ah)
+mfxStatus QueryImplsDescription(VideoCORE& core, mfxDecoderDescription& caps, mfx::PODArraysHolder& ah, const std::vector<mfxU32>& codecIds)
 {
     static const CodecId2Handlers codecId2Handlers =
     {
@@ -739,16 +739,39 @@ mfxStatus QueryImplsDescription(VideoCORE& core, mfxDecoderDescription& caps, mf
     #endif
     };
 
-    for (auto& c : codecId2Handlers)
+    auto queryCodec = [&](auto& handler, const mfxU32& codecId)
     {
-        if (!c.second.QueryImplsDescription)
-            continue;
+        if (!handler.QueryImplsDescription)
+            return;
 
-        auto& dec = ah.PushBack(caps.Codecs);
-        dec.CodecID = c.first;
+        mfxDecoderDescription::decoder dec = {};
+        dec.CodecID = codecId;
 
-        MFX_SAFE_CALL(c.second.QueryImplsDescription(core, dec, ah));
+        if (MFX_ERR_NONE != handler.QueryImplsDescription(core, dec, ah))
+            return;
+
+        ah.PushBack(caps.Codecs) = dec;
         ++caps.NumCodecs;
+    };
+
+    if (codecIds.size() == 0)
+    {
+        for (auto& c : codecId2Handlers)
+        {
+            queryCodec(c.second, c.first);
+        }
+    }
+    else
+    {
+        for (auto& codecId : codecIds)
+        {
+            auto c = codecId2Handlers.find(codecId);
+
+            if (c == codecId2Handlers.end())
+                continue;
+
+            queryCodec(c->second, codecId);
+        }
     }
 
     return MFX_ERR_NONE;
