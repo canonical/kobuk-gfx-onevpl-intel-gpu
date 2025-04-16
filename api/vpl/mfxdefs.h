@@ -208,6 +208,10 @@ typedef enum {
     MFX_VARIANT_TYPE_F64   = MFX_DATA_TYPE_F64,                          /*!< 64-bit double precision floating point. */
     MFX_VARIANT_TYPE_PTR   = MFX_DATA_TYPE_PTR,                          /*!< Generic type pointer. */
     MFX_VARIANT_TYPE_FP16  = MFX_DATA_TYPE_FP16,                         /*!< 16-bit half precision floating point. */
+
+#ifdef ONEVPL_EXPERIMENTAL
+    MFX_VARIANT_TYPE_QUERY = 0x00000100,                                 /*!< Bitmask to OR with other variant types when using property-based query API */
+#endif
 } mfxVariantType;
 
 MFX_PACK_BEGIN_STRUCT_W_PTR()
