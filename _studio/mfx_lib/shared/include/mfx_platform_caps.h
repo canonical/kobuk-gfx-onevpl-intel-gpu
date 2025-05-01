@@ -63,6 +63,11 @@ namespace CommonCaps {
         return (platform != MFX_HW_DG2);
     }
 
+    inline bool IsSrAYUVorYUY2FormatSupported(eMFXHWType platform)
+    {
+        return (platform >= MFX_HW_LNL);
+    }
+
     inline bool IsVAEncSliceLPSupported(eMFXHWType platform)
     {
         return (platform < MFX_HW_MTL);
@@ -77,6 +82,12 @@ namespace CommonCaps {
     inline bool IsCBRSlidingWinSupported(eMFXHWType platform)
     {
         return (platform >= MFX_HW_MTL);
+    }
+
+    inline bool IsFastPassLASupported(eMFXHWType platform, mfxU16 ChromaFormat)
+    {
+        return ((platform == MFX_HW_BMG || platform >= MFX_HW_PTL)
+            && (ChromaFormat == MFX_CHROMAFORMAT_YUV420));
     }
 }
 

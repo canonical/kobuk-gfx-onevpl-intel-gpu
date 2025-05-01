@@ -5425,8 +5425,18 @@ mfxStatus ValidateParams(mfxVideoParam *par, mfxVppCaps *caps, VideoCORE *core, 
                 {
                     sts = GetWorstSts(sts, MFX_ERR_UNSUPPORTED);
                 }
-                if (par->vpp.In.FourCC != MFX_FOURCC_NV12 ||
-                    (par->vpp.Out.FourCC != MFX_FOURCC_NV12 && par->vpp.Out.FourCC != MFX_FOURCC_BGRA))
+                bool isFormatSupported = false;
+                if (CommonCaps::IsSrAYUVorYUY2FormatSupported(core->GetHWType()))
+                {
+                    // Check for supported formats when hardware supports AYUV and YUY2
+                    isFormatSupported = (par->vpp.In.FourCC == MFX_FOURCC_AYUV && par->vpp.Out.FourCC == MFX_FOURCC_AYUV) ||
+                        (par->vpp.In.FourCC == MFX_FOURCC_YUY2 && par->vpp.Out.FourCC == MFX_FOURCC_YUY2);
+                }
+                // Always check NV12/BGRA formats regardless of hardware support
+                isFormatSupported = isFormatSupported ||
+                    (par->vpp.In.FourCC == MFX_FOURCC_NV12 && (par->vpp.Out.FourCC == MFX_FOURCC_NV12 || par->vpp.Out.FourCC == MFX_FOURCC_BGRA));
+
+                if (!isFormatSupported)
                 {
                     sts = GetWorstSts(sts, MFX_ERR_UNSUPPORTED);
                 }
@@ -7160,6 +7170,16 @@ mfxStatus ConfigureExecuteParams(
         }
     }
 
+    if ( (0 == memcmp(&videoParam.vpp.In, &videoParam.vpp.Out, sizeof(mfxFrameInfo))) &&
+         executeParams.IsDoNothing() )
+    {
+        config.m_bCopyPassThroughEnable = true;
+    }
+    else
+    {
+        config.m_bCopyPassThroughEnable = false;// after Reset() parameters may be changed,
+                                            // flag should be disabled
+    }
 
     if (inDNRatio == outDNRatio && !executeParams.bVarianceEnable && !executeParams.bComposite &&
             !(config.m_extConfig.mode == IS_REFERENCES) )
