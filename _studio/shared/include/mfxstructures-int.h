@@ -464,9 +464,9 @@ typedef struct {
     { 0xA78D, MFX_HW_ADL_S, MFX_GT1 },//RPL-S
     { 0xA78E, MFX_HW_ADL_S, MFX_GT1 },//RPL-S
 
-    { 0xA7AA, MFX_HW_ADL_S, MFX_GT1 },//RPL 
-    { 0xA7AB, MFX_HW_ADL_S, MFX_GT1 },//RPL 
-    { 0xA7AC, MFX_HW_ADL_S, MFX_GT1 },//RPL 
+    { 0xA7AA, MFX_HW_ADL_S, MFX_GT1 },//RPL
+    { 0xA7AB, MFX_HW_ADL_S, MFX_GT1 },//RPL
+    { 0xA7AC, MFX_HW_ADL_S, MFX_GT1 },//RPL
     { 0xA7AD, MFX_HW_ADL_S, MFX_GT1 },//RPL
 
     /* ADL-P */
@@ -608,6 +608,10 @@ typedef struct {
     { 0xB081, MFX_HW_PTL, MFX_GT2 },
     { 0xB082, MFX_HW_PTL, MFX_GT2 },
     { 0xB083, MFX_HW_PTL, MFX_GT2 },
+    { 0xB084, MFX_HW_PTL, MFX_GT2 },
+    { 0xB085, MFX_HW_PTL, MFX_GT2 },
+    { 0xB086, MFX_HW_PTL, MFX_GT2 },
+    { 0xB087, MFX_HW_PTL, MFX_GT2 },
     { 0xB08F, MFX_HW_PTL, MFX_GT2 },
     { 0xB090, MFX_HW_PTL, MFX_GT2 },
     { 0xB0A0, MFX_HW_PTL, MFX_GT2 },
