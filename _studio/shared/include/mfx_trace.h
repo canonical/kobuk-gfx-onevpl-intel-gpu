@@ -117,16 +117,16 @@ enum mfxTraceTaskType
     MFX_TRACE_API_AVC_DISPLAYINFO_TASK,
     MFX_TRACE_API_AV1_DISPLAYINFO_TASK,
     MFX_TRACE_API_VP9_DISPLAYINFO_TASK,
-    MFX_TRACE_API_HEVC_PICTUREPARAMETER_TASK,   
+    MFX_TRACE_API_HEVC_PICTUREPARAMETER_TASK,
     MFX_TRACE_API_HEVC_SLICEPARAMETER_TASK,
     MFX_TRACE_API_HEVC_QMATRIXARAMETER_TASK,
     MFX_TRACE_API_AVC_PICTUREPARAMETER_TASK,
     MFX_TRACE_API_AVC_SLICEPARAMETER_TASK,
     MFX_TRACE_API_AVC_QMATRIXARAMETER_TASK,
     MFX_TRACE_API_AV1_PICTUREPARAMETER_TASK,
-    MFX_TRACE_API_AV1_TILECONTROLPARAMETER_TASK,      
+    MFX_TRACE_API_AV1_TILECONTROLPARAMETER_TASK,
     MFX_TRACE_API_VP9_PICTUREPARAMETER_TASK,
-    MFX_TRACE_API_VP9_SEGMENTPARAMETER_TASK,   
+    MFX_TRACE_API_VP9_SEGMENTPARAMETER_TASK,
     MFX_TRACE_API_BITSTREAM_TASK,
     MFX_TRACE_API_HEVC_DPBPARAMETER_TASK,
     MFX_TRACE_API_AVC_DPBPARAMETER_TASK,
@@ -594,9 +594,11 @@ extern "C" {
     MFX_LTRACE_1(_level, _message, NULL, 0)
 
 #define MFX_LTRACE_MSG_1(_level, ...) \
+{\
     char str[256]; \
     sprintf(str, __VA_ARGS__); \
     MFX_LTRACE_MSG(_level, str); \
+}\
 
 #define MFX_LTRACE_S(_level, _string) \
     MFX_LTRACE_1(_level, #_string " = ", MFX_TRACE_FORMAT_S, _string)
@@ -647,7 +649,7 @@ else {                                                                  \
 }
 #else
 #define MFX_LTRACE_BUFFER(_level, _buffer) \
-    MFX_LTRACE_BUFFER_S(_level, #_buffer, _buffer, sizeof(*_buffer)) 
+    MFX_LTRACE_BUFFER_S(_level, #_buffer, _buffer, sizeof(*_buffer))
 #endif
 
 #define MFX_LTRACE_GUID(_level, _guid) \
@@ -696,6 +698,50 @@ else {                                                                  \
 #define MFX_TRACE_BUFFER(_name, _buffer, _size) \
     MFX_LTRACE_BUFFER(MFX_TRACE_LEVEL, _name, _buffer, _size)
 
+// New Macro for VPL Log
+#define MFX_CRITICAL_MSG(...) \
+{ \
+  MFX_LTRACE_MSG_1(MFX_TRACE_LEVEL_CRITICAL_INFO, __VA_ARGS__);\
+} \
+
+#define MFX_WARNING_MSG(...) \
+{ \
+  MFX_LTRACE_MSG_1(MFX_TRACE_LEVEL_WARNING_INFO, __VA_ARGS__);\
+} \
+
+#define MFX_NORMAL_MSG(...) \
+{ \
+  MFX_LTRACE_MSG_1(MFX_TRACE_LEVEL_PARAMS, __VA_ARGS__);\
+} \
+
+#define MFX_CHECK_STATUS_RETURN(sts)\
+{\
+    if(sts!=0)\
+    {\
+        MFX_LTRACE_I(MFX_TRACE_LEVEL_PARAMS, sts);\
+        return sts;\
+    }\
+}\
+
+#define MFX_CHECK_STS_MSG_RETURN(sts, ...)                            \
+{                                                                     \
+    MFXLTraceI mFXLTraceI;                                            \
+    auto status_tmp = (sts);                                          \
+    if (status_tmp != 0)                                              \
+    {                                                                 \
+       int8_t sts_type = mFXLTraceI.check_sts_type(status_tmp);       \
+       if (sts_type < 0)                                              \
+       {                                                              \
+         MFX_CRITICAL_MSG(__VA_ARGS__);                               \
+       }                                                              \
+       else if (sts_type > 0)                                         \
+       {                                                              \
+         MFX_WARNING_MSG(__VA_ARGS__);                                \
+       }                                                              \
+       mFXLTraceI.mfx_ltrace_i(MFX_TRACE_LEVEL_PARAMS, "Status", __FUNCTION__, __FILE__, __LINE__, status_tmp);    \
+       return status_tmp; \
+    }\
+}                                                                     \
 /*------------------------------------------------------------------------------*/
 
 #ifdef __cplusplus
@@ -771,9 +817,30 @@ private:
     _MFX_AUTO_LTRACE_(MFX_TRACE_LEVEL, _task_name, MFX_TRACE_DEFAULT_TASK, true)
 
 #ifdef MFX_TRACE_ENABLE
-class MFXLTraceI 
+class MFXLTraceI
 {
 public:
+    template <typename T>
+    int8_t check_sts_type(T sts)
+    {
+        if (sts > 0)
+            return 1;
+        else if (sts < 0)
+            return -1;
+        else
+            return 0;
+    }
+
+    int8_t check_sts_type(mfxStatus sts)
+    {
+        if (sts > MFX_ERR_NONE || sts == MFX_ERR_MORE_DATA || sts == MFX_ERR_MORE_SURFACE || sts == MFX_ERR_INCOMPATIBLE_VIDEO_PARAM) //MFX_ERR_MORE_DATA, MFX_ERR_MORE_SURFACE and MFX_ERR_INCOMPATIBLE_VIDEO_PARAM are warning status
+            return 1;
+        else if (sts < MFX_ERR_NONE)
+            return -1;
+        else
+            return 0;
+    }
+
     template <typename T>
     void mfx_ltrace_i(mfxTraceLevel _level, const char* _mesg, const char* _function, const char* _filename, mfxTraceU32 _line, T _arg1)
     {
@@ -794,11 +861,11 @@ public:
     {
         std::error_code code = mfx::make_error_code(_arg1);
         std::stringstream ss;
-        if (_arg1 > 0 || _arg1 == -10 || _arg1 == -11 || _arg1 == -14) //MFX_ERR_MORE_DATA, MFX_ERR_MORE_SURFACE and MFX_ERR_INCOMPATIBLE_VIDEO_PARAM are warning status
+        if (_arg1 > MFX_ERR_NONE || _arg1 == MFX_ERR_MORE_DATA || _arg1 == MFX_ERR_MORE_SURFACE || _arg1 == MFX_ERR_INCOMPATIBLE_VIDEO_PARAM) //MFX_ERR_MORE_DATA, MFX_ERR_MORE_SURFACE and MFX_ERR_INCOMPATIBLE_VIDEO_PARAM are warning status
         {
             ss << "[Warning]  ";
         }
-        else if (_arg1 < 0) 
+        else if (_arg1 < MFX_ERR_NONE)
         {
             ss << "[Critical]  ";
         }
